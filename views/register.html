@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <form onsubmit="register(event)">
+        <label for="">帳號:</label>
+        <input type="text" id="username" required>
+        <label for="">密碼:</label>
+        <input type="password" id="password" required>
+        <label for="">密碼確認:</label>
+        <input type="password" id="confirm" required>
+        <button>送出</button>
+    </form>
+<script>
+    function register(e){
+    e.preventDefault();
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let confirm = document.getElementById("confirm").value;
+    
+    //驗證密碼與確認密碼是否一致
+    if(confirm === password){
+        fetch("/register",{
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                confirm: confirm
+            })
+        })
+        .then(function(res){
+            return res.json();
+        })                  
+        .then(function(data){
+            //註冊成功
+            if(data.register){
+                //重新導向到登入頁面
+                location.href = "/login"
+            }else{
+                alert("此帳號已有人註冊")
+            }
+        })
+    }else{
+        alert("密碼與確認密碼不同");
+    }
+}
+</script>
+</body>
+</html>
